@@ -3,14 +3,16 @@ __author__ = 'salchi'
 from tkinter import *
 from StatusBar import StatusBar
 from tkinter import messagebox
+from main import Main
 
 
 class Dialog:
     def __init__(self, parent, n):
 
         top = self.top = Toplevel(parent)
-        top.geometry("180x75")
-        top.attributes("-toolwindow", 1)
+        top.geometry("230x75")
+        top.resizable(0, 0)
+        #top.attributes("-toolwindow", 1)
 
         if n == 1 or n == 2:
             Label(top, text="Player Name %i" % n).pack()
@@ -29,6 +31,10 @@ class Dialog:
         self.result = self.e.get()
 
         self.top.destroy()
+
+
+def callback(event):
+    print("Click at", event.x, event.y)
 
 
 def callback(event):
@@ -57,10 +63,32 @@ def Create_Main():
     lbl_1 = Label(root, text="Player 2", font=font, bg="White", fg="gray")
     lbl_1.place(x=950, y=130)
 
-    Bar_1 = StatusBar(root)
 
-    Bar_1.set("Turno: %s", "Jugador 1")
-    Bar_1.pack(padx=30, pady=65)
+
+# --------------------------- Barras de Estado ------------------------
+
+    Bar_Turno = StatusBar(root)
+
+    Bar_Turno.set("Turno: %s", "Jugador 1")
+    Bar_Turno.pack(padx=30, pady=65)
+
+    Bar_Tiros_Player1 = StatusBar(root)
+    Bar_Tiros_Player2 = StatusBar(root)
+    Bar_Tiros_Player1.place(x=265, y=130)
+    Bar_Tiros_Player2.place(x=1040, y=130)
+
+    Bar_Tiros_Acert_Play1 = StatusBar(root)
+    Bar_Tiros_Acert_Play2 = StatusBar(root)
+    Bar_Tiros_Acert_Play1.place(x=365, y=130)
+    Bar_Tiros_Acert_Play2.place(x=1145, y=130)
+
+
+    Bar_Tiros_Player1.set("Tiros Totales: %s", "0")
+    Bar_Tiros_Player2.set("Tiros Totales: %s", "0")
+
+    Bar_Tiros_Acert_Play1.set("Tiros Acertados: %s", "0")
+    Bar_Tiros_Acert_Play2.set("Tiros Acertados: %s", "0")
+
 
     frm_2 = Frame(root, width=520, height=520, bd=-2, bg="gray")
     frm_1 = Frame(root, width=520, height=520, bd=-2, bg="gray")
@@ -104,11 +132,20 @@ def Create_Main():
     print(ships)    # Testing Lines
 
     try:
-        xy = int(dialog_cons("Ships", "Please Quantity of ships for the Game!"))
+        xy = int(dialog_cons("Quantity of matrix: (Ej: nxn, insert n)", "Please insert the size for Game's matrix!"))
     except ValueError:
-        messagebox.showinfo("Warning!", "La variable debe ser numero")
+        messagebox.showinfo("Warning!", "La variable debe ser numero!")
         xy = int(dialog_cons("Ships", "Please Quantity of ships for the Game!"))
     print(xy)    # Testing Lines
+
+    game = Main(player1, player2, xy, xy, ships)
+    game.imprimir
+    game.imprimir2
+    game.images(frm_1, game.matrix_shoots_player_1, game.matrix_player_1)
+    game.images(frm_2, game.matrix_shoots_comp_player_2, game.matrix_comp_player_2)
+
+
+
 
     frm_1.bind("<Button-1>", callback)
     frm_2.bind("<Button-1>", callback)
